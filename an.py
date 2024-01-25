@@ -45,7 +45,7 @@ def main():
     xs = []
 
     #itero su ogni file contenuto in files
-    for index in range(len(files)):
+    for index in range(len(files) - 2):
         file = files[index]
  
         print(file, index)
@@ -60,7 +60,7 @@ def main():
         arr = pylhe.to_awkward(pylhe.read_lhe_with_attributes(file) , weight_names)
 
         #calcolo peso nominale per tutti gli eventi e controllo la somma restituisca la sezione d'urto
-        tot_nom_weights = arr.eventinfo.weight * xs[index] * 1000/ ak.sum(arr.eventinfo.weight)
+        tot_nom_weights = arr.eventinfo.weight * xs[index] * 1000
         print("cross-section del file: " + str(xs[index]))
         print("somma pesi nominali: " + str(ak.sum(tot_nom_weights)))
 
