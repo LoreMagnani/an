@@ -125,7 +125,7 @@ for index in range(len(fis)):
     xs = pylhe.read_lhe_init(fi)['procInfo'][0]['xSection']
     weight_names = ['rwgt_' + str(i) for i in range(1, 46)]
     arr = pylhe.to_awkward(pylhe.read_lhe_with_attributes(fi) , weight_names)
-    nom_weights = (arr.eventinfo.weight * xs * 1000/ ak.sum(arr.eventinfo.weight))
+    nom_weights = (arr.eventinfo.weight * xs * 1000)
     tot_nom_weights += ak.sum(nom_weights)
 
 #crea istogrammi in modo automatizzato
