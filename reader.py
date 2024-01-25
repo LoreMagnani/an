@@ -66,7 +66,7 @@ weights = {
         "w_quad_clebQIm": f"((-w_sm + 0.5*(weights[16] + weights[15])))",
         "w_sm_lin_quad_clebQIm": f"((weights[16]))"
         }    
-
+"""
 #qua uso parser per riconoscere argomenti per fare solo alcuni istogrammi
 def defaultParser():
 
@@ -97,7 +97,7 @@ if xmax == 3:
     xmax = np.pi
 if xmin == -3:
     xmin = -np.pi
-
+"""
 #questo riempe il dataframe con array di pesi (non so a che servano)
 for key in weights.keys():
     df = df.Define(key, weights[key])
@@ -108,14 +108,34 @@ histos = []
 
 print(df.AsNumpy(columns=["nom_weights"])["nom_weights"])
 
+#trovo somma pesi nominali
+lhe_path = os.getcwd() + "/.."
+prelhe = sys.argv[1]
+extlhe = ".lhe"
+unsorted_fis = [fi for fi in os.listdir(lhe_path) if fi.startswith(prelhe) and fi.endswith(extlhe)]
+unsorted_fis = np.array(unsorted_fis)
+def custom_sort_lhe(fi_name):
+    return int(fi_name.split('_')[1].split('.')[0])
+fis = sorted(unsorted_fis, key=custom_sort_lhe)
+fis = list(map(lambda k: lhe_path + "/" + k, fis))
+tot_nom_weights = 0
+for index in range(len(fis)):
+    fi = fis[index]
+    print(fi , index)
+    xs = pylhe.read_lhe_init(fi)['procInfo'][0]['xSection']
+    weight_names = ['rwgt_' + str(i) for i in range(1, 46)]
+    arr = pylhe.to_awkward(pylhe.read_lhe_with_attributes(fi) , weight_names)
+    nom_weights = (arr.eventinfo.weight * xs * 1000/ ak.sum(arr.eventinfo.weight))
+    tot_nom_weights += ak.sum(nom_weights)
 
 #crea istogrammi in modo automatizzato
 vars = ["mll", "deltaPhill", "deltaEtall", "ptl1", "ptl2", "mJJ", "deltaPhiJJ", "deltaEtaJJ", "ptJ1", "ptJ2"]
 xmin = [70 , -np.pi , -4 , 0 , 0 , 0  , -np.pi , -9 , 0 , 0]
 xmax = [110 , np.pi , 4 , 900 , 400 , 5000 , np.pi , 9 , 1100 , 1000]
 for w in weights.keys():
-    counts = df.Count().GetValue()
-    weight = f'{lum} * ({w} * nom_weights / {counts})'
+    #counts = df.Count().GetValue()
+    counts = tot_nom_weights
+    weight = f'100 * ({w} * nom_weights / {counts})'
     #weight = f'{lum} * 1000.0 * ' + w
     df = df.Redefine(w, weight)
 for j in range(len(vars)):
@@ -149,6 +169,7 @@ for j in range(len(vars)):
     f.Close()
        
     print(vars[j] + ' fatto')
+
 
 
 """
@@ -236,3 +257,8 @@ for f in files:
 
 df = ROOT.RDataFrame("Events", files)
 """
+
+
+
+
+

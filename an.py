@@ -65,7 +65,7 @@ def main():
         print("somma pesi nominali: " + str(ak.sum(tot_nom_weights)))
 
         # Creazione di un file ROOT e di un TTree
-        output_file = ROOT.TFile("output_" + str(index + 10) + ".root" , "RECREATE")
+        output_file = ROOT.TFile("output_" + str(index) + ".root" , "RECREATE")
         output_tree = ROOT.TTree("events", "Event tree")
 
         # Dichiarazione delle variabili da inserire nel TTree
