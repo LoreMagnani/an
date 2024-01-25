@@ -19,9 +19,7 @@ plt.style.use([d, hep.style.firamath])
 effes = []
 for nome_file in os.listdir(output_path):
     if nome_file.endswith(".root") and nome_file.startswith("hist_"):
-        # Costruisci il percorso completo del file
         percorso_file = os.path.join(output_path, nome_file)
-        # Apri il file e aggiungilo alla lista
         if os.path.isfile(percorso_file):
             f = uproot.open(nome_file)
             effes.append(f)
@@ -81,22 +79,19 @@ for nome_file in os.listdir(output_path):
             def nome_Latex(variableName):
                 new_nome = ""
 
-                # Verifica se la parte 'delta' è presente nel nome
+                # Aggiungi la parte iniziale
                 if 'delta' in variableName:
                     new_nome += r'\Delta'
-
-                # Verifica se la parte 'Eta' è presente nel nome
                 if 'Eta' in variableName:
                     new_nome += r'\eta'
-                # Altrimenti, verifica se la parte 'Phi' è presente nel nome
                 elif 'Phi' in variableName:
                     new_nome += r'\phi'
                 elif 'm' in variableName:
-                    new_nome += variableName
+                    new_nome += r'm'
                 elif 'pt' in variableName:
                     new_nome += r'p_{t'
 
-                # Aggiungi la parte finale '_{jj}' o '_{ll}' in base alla terminazione
+                # Aggiungi la parte finale
                 if 'JJ' in variableName:
                     new_nome += '_{jj}'
                 elif 'll' in variableName:
@@ -503,7 +498,7 @@ for nome_file in os.listdir(output_path):
 
             eps = (y1-y0)/2
             y0 -= eps
-            y0 = max(y0, 1)
+            # y0 = max(y0, 1)
             y1 += eps*5
 
             #y0 = max(np.min(thstack), 1)

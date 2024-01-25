@@ -114,7 +114,8 @@ vars = ["mll", "deltaPhill", "deltaEtall", "ptl1", "ptl2", "mJJ", "deltaPhiJJ", 
 xmin = [70 , -np.pi , -4 , 0 , 0 , 0  , -np.pi , -9 , 0 , 0]
 xmax = [110 , np.pi , 4 , 900 , 400 , 5000 , np.pi , 9 , 1100 , 1000]
 for w in weights.keys():
-    weight = f'{lum} * ({w} * nom_weights)'
+    counts = df.Count().GetValue()
+    weight = f'{lum} * ({w} * nom_weights / {counts})'
     #weight = f'{lum} * 1000.0 * ' + w
     df = df.Redefine(w, weight)
 for j in range(len(vars)):
@@ -235,8 +236,3 @@ for f in files:
 
 df = ROOT.RDataFrame("Events", files)
 """
-
-
-
-
-
